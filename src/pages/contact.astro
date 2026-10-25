@@ -1,0 +1,44 @@
+---
+import CurrentPositions from '../components/CurrentPositions.astro';
+import Email from '../components/Email.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getProfile } from '../lib/content';
+
+const profile = (await getProfile()).data;
+---
+
+<BaseLayout
+  title="Contact"
+  description={`How to get in touch with ${profile.name}.`}
+>
+  <h1>Contact</h1>
+
+  {profile.email && (
+    <>
+      <p class="lead">The best way to reach Austin is by email.</p>
+      <p class="contact-email">
+        <Email address={profile.email} />
+      </p>
+    </>
+  )}
+
+  {profile.currentPositions.length > 0 && (
+    <>
+      <h2>Affiliations</h2>
+      <CurrentPositions positions={profile.currentPositions} />
+    </>
+  )}
+
+  {profile.links.length > 0 && (
+    <>
+      <h2>Elsewhere online</h2>
+      <ul class="link-list">
+        {profile.links.map(({ label, url }) => (
+          <li>
+            <a href={url}>{label}</a>
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+</BaseLayout>

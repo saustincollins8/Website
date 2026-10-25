@@ -1,0 +1,74 @@
+---
+import '@fontsource-variable/newsreader/opsz.css';
+import '@fontsource-variable/newsreader/opsz-italic.css';
+import '@fontsource-variable/public-sans/wght.css';
+import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import PersonSchema from '../components/PersonSchema.astro';
+import { getProfile } from '../lib/content';
+import { withBase } from '../lib/site';
+
+interface Props {
+  /** Page title; omit on the home page. */
+  title?: string;
+  description?: string;
+  /** Keep the page out of search results, e.g. the 404 page. */
+  noindex?: boolean;
+}
+
+const profile = (await getProfile()).data;
+const { title, description = profile.shortBio, noindex = false } = Astro.props;
+const isHome = !title;
+
+const pageTitle = title
+  ? `${title} | ${profile.name}`
+  : `${profile.name} | ${profile.tagline}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const shareImage = profile.headshot
+  ? new URL(
+      (await getImage({ src: profile.headshot, format: 'jpg', width: 321 }))
+        .src,
+      Astro.site ?? Astro.url,
+    )
+  : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    {noindex ? (
+      <meta name="robots" content="noindex" />
+    ) : (
+      <link rel="canonical" href={canonical} />
+    )}
+    <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
+    <link rel="sitemap" href={withBase('sitemap-index.xml')} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    {!noindex && <meta property="og:url" content={canonical} />}
+    {shareImage && <meta property="og:image" content={shareImage} />}
+    <meta name="twitter:card" content="summary" />
+    {isHome && <PersonSchema profile={profile} image={shareImage} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      Skip to content
+    </a>
+    <div class="page">
+      <Header profile={profile} />
+      <div class="page-main">
+        <main id="main">
+          <slot />
+        </main>
+        <Footer profile={profile} />
+      </div>
+    </div>
+  </body>
+</html>

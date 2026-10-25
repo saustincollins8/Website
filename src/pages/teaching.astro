@@ -1,0 +1,77 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPage } from '../lib/content';
+import { byStartDesc } from '../lib/format';
+import { withBase } from '../lib/site';
+
+const page = await getPage('teaching');
+const { Content } = await render(page);
+const hasStatement = Boolean(page.body?.trim());
+
+// Group courses by institution, most recent institution first.
+const courses = (await getCollection('courses')).sort(byStartDesc);
+const institutions = [
+  ...new Set(courses.map((course) => course.data.institution)),
+];
+const groups = await Promise.all(
+  institutions.map(async (institution) => ({
+    institution,
+    courses: await Promise.all(
+      courses
+        .filter((course) => course.data.institution === institution)
+        .map(async (course) => ({
+          ...course,
+          hasDescription: Boolean(course.body?.trim()),
+          Content: (await render(course)).Content,
+        })),
+    ),
+  })),
+);
+---
+
+<BaseLayout
+  title={page.data.title}
+  description={page.data.description ?? page.data.intro}
+>
+  <h1>{page.data.title}</h1>
+  {page.data.intro && <p class="lead">{page.data.intro}</p>}
+
+  {hasStatement && (
+    <>
+      <h2>Teaching statement</h2>
+      <Content />
+    </>
+  )}
+
+  <h2>Courses taught</h2>
+  {groups.map((group) => (
+    <section class="course-group">
+      <h3>{group.institution}</h3>
+      <ul class="plain-entries">
+        {group.courses.map((course) => (
+          <li>
+            <p class="entry-title">{course.data.title}</p>
+            {(course.data.when || course.data.format) && (
+              <p class="entry-meta">
+                {[course.data.when, course.data.format]
+                  .filter(Boolean)
+                  .join(' · ')}
+              </p>
+            )}
+            {course.data.syllabus && (
+              <p class="entry-links">
+                <a href={withBase(course.data.syllabus)}>Syllabus (PDF)</a>
+              </p>
+            )}
+            {course.hasDescription && (
+              <div class="entry-note">
+                <course.Content />
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</BaseLayout>

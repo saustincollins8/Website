@@ -1,0 +1,35 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  profile: CollectionEntry<'profile'>['data'];
+}
+
+const { profile } = Astro.props;
+// Skip the quote or credit if they were emptied in the editor.
+const quote = profile.footerQuote?.text ? profile.footerQuote : undefined;
+const credit = profile.credit?.text ? profile.credit : undefined;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  {quote && (
+    <figure class="pull-quote">
+      <blockquote lang={quote.lang}>
+        <p>{quote.text}</p>
+      </blockquote>
+      {quote.translation && (
+        <p class="pull-quote-translation">{quote.translation}</p>
+      )}
+      {quote.author && <figcaption>{quote.author}</figcaption>}
+    </figure>
+  )}
+  <div class="footer-meta">
+    <p>
+      &copy; {year} {profile.name}
+    </p>
+    {credit && (
+      <p>{credit.url ? <a href={credit.url}>{credit.text}</a> : credit.text}</p>
+    )}
+  </div>
+</footer>

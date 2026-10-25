@@ -1,0 +1,47 @@
+---
+// A talk as two lines: its title, then event, place and date in small type.
+import type { CollectionEntry } from 'astro:content';
+import { withPeriod } from '../lib/format';
+
+interface Props {
+  talk: CollectionEntry<'talks'>['data'];
+  /** Set to false where the year is already shown, e.g. under a year heading. */
+  showYear?: boolean;
+}
+
+const { talk, showYear = true } = Astro.props;
+
+const linkLabels: Partial<Record<typeof talk.kind, string>> = {
+  podcast: 'Listen',
+  writing: 'Read',
+  video: 'Watch',
+};
+
+const dateParts: Record<typeof talk.datePrecision, Intl.DateTimeFormatOptions> =
+  {
+    year: showYear ? { year: 'numeric' } : {},
+    month: showYear ? { month: 'long', year: 'numeric' } : { month: 'long' },
+    day: showYear
+      ? { day: 'numeric', month: 'long', year: 'numeric' }
+      : { day: 'numeric', month: 'long' },
+  };
+const options = dateParts[talk.datePrecision];
+const when = Object.keys(options).length
+  ? talk.date.toLocaleDateString('en-GB', { ...options, timeZone: 'UTC' })
+  : '';
+
+const title = talk.title ?? talk.event;
+const meta = [talk.title ? talk.event : undefined, talk.location, when]
+  .filter(Boolean)
+  .join(' · ');
+---
+
+<p class="entry-title">{title}</p>
+{meta && <p class="entry-meta">{meta}</p>}
+{talk.note && <p class="entry-note">{withPeriod(talk.note)}</p>}
+{(talk.url || talk.video) && (
+  <p class="entry-links">
+    {talk.url && <a href={talk.url}>{linkLabels[talk.kind] ?? 'Details'}</a>}
+    {talk.video && <a href={talk.video}>Video</a>}
+  </p>
+)}

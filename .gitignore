@@ -1,0 +1,17 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# environment
+.env
+.env.*
+
+# editors and local tools
+.DS_Store
+.idea/
+.vscode/
+.remember/
+.playwright-mcp/

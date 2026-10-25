@@ -1,0 +1,25 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPage, getProfile } from '../lib/content';
+
+const profile = (await getProfile()).data;
+const page = await getPage('research');
+const { Content } = await render(page);
+---
+
+<BaseLayout title={page.data.title} description={page.data.description}>
+  <h1>{page.data.title}</h1>
+  <Content />
+
+  {profile.researchInterests.length > 0 && (
+    <section>
+      <h2>Research interests</h2>
+      <ul class="plain-list plain-list-columns">
+        {profile.researchInterests.map((interest) => (
+          <li>{interest}</li>
+        ))}
+      </ul>
+    </section>
+  )}
+</BaseLayout>

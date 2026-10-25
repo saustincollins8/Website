@@ -1,0 +1,89 @@
+---
+// Formats a publication in Chicago bibliography style, without the author's name.
+import type { CollectionEntry } from 'astro:content';
+import { withPeriod } from '../lib/format';
+
+interface Props {
+  pub: CollectionEntry<'publications'>['data'];
+}
+
+const { pub } = Astro.props;
+const year = String(pub.date.getUTCFullYear());
+// Unpublished work shows its status where the year would go.
+const when = {
+  published: year,
+  forthcoming: 'forthcoming',
+  'in-progress': 'in progress',
+}[pub.status];
+const capitalised = when.charAt(0).toUpperCase() + when.slice(1);
+
+type Segment = { text: string; italic?: boolean };
+const segments: Segment[] = [];
+const add = (text: string, italic = false) => segments.push({ text, italic });
+
+// Title
+if (pub.type === 'book') {
+  add(pub.title, true);
+  add('. ');
+} else if (pub.type === 'review') {
+  const work = pub.reviewedWork;
+  add('Review of ');
+  add(pub.title, true);
+  if (work?.creators) add(`, ${work.creators}`);
+  const imprint = [work?.publisher, work?.year].filter(Boolean).join(', ');
+  if (imprint) add(` (${imprint})`);
+  add('. ');
+} else {
+  add(`“${withPeriod(pub.title)}” `);
+}
+
+// Where it appeared
+if (pub.type === 'book') {
+  if (pub.status === 'in-progress') {
+    if (!pub.note) add('Book manuscript in progress.');
+  } else {
+    add(pub.publisher ? `${pub.publisher}, ${when}.` : `${capitalised}.`);
+  }
+} else if (pub.type === 'chapter') {
+  if (pub.venue) {
+    add('In ');
+    add(pub.venue, true);
+  }
+  if (pub.editors)
+    add(`${pub.venue ? ', edited' : 'Edited'} by ${pub.editors}`);
+  if (pub.pages && (pub.venue || pub.editors)) add(`, ${pub.pages}`);
+  if (pub.venue || pub.editors) add('. ');
+  add(pub.publisher ? `${pub.publisher}, ${when}.` : `${capitalised}.`);
+} else {
+  if (pub.type === 'report') add('Workshop report. ');
+  if (pub.venue) add(pub.venue, true);
+  if (pub.status !== 'published') {
+    add(pub.venue ? `, ${when}.` : `${capitalised}.`);
+  } else if (pub.volume || pub.issue) {
+    if (pub.volume) add(` ${pub.volume}`);
+    if (pub.issue) add(`${pub.volume ? ',' : ''} no. ${pub.issue}`);
+    add(` (${year})`);
+    if (pub.pages) add(`: ${pub.pages}`);
+    add('.');
+  } else if (pub.publisher) {
+    add(pub.venue ? '. ' : '');
+    add(`${pub.publisher}, ${year}.`);
+  } else {
+    add(pub.venue ? `, ${year}.` : `${year}.`);
+  }
+}
+
+if (pub.note) {
+  const previous = segments.at(-1)?.text ?? '';
+  add(`${previous.endsWith(' ') ? '' : ' '}${withPeriod(pub.note)}`);
+}
+
+const link = pub.doi ? `https://doi.org/${pub.doi}` : pub.url;
+const linkText = pub.doi ? link : 'Read online';
+---
+
+<span class="citation">
+  {segments.map(({ text, italic }) => (italic ? <cite>{text}</cite> : text))}
+  {link && ' '}
+  {link && <a href={link}>{linkText}</a>}
+</span>

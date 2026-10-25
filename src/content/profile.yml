@@ -1,0 +1,43 @@
+name: Dr. S. Austin Collins
+fullName: Austin Collins
+tagline: Historian of early modern France, Europe, and the Globe
+shortBio: Austin Collins is a historian of early modern France and Europe whose
+  research focuses on the French Wars of Religion, urban and spatial history,
+  and religious toleration and coexistence.
+email: saustincollins8@gmail.com
+headshot: ../assets/headshot.webp
+headshotAlt: Portrait of Austin Collins
+currentPositions:
+  - title: Adjunct Professor in History
+    institution: Gardner-Webb University
+    url: https://gardner-webb.edu/people/austin-collins/
+  - title: Adjunct Professor in History
+    institution: Lenoir-Rhyne University
+  - title: Adjunct Professor in History
+    institution: Belmont Abbey College
+researchInterests:
+  - Early modern France, Europe, and Globe
+  - French Wars of Religion
+  - Urban and Spatial history
+  - Centre and Periphery
+  - Religious Toleration and Coexistence
+  - Visual and material culture
+links:
+  - label: ORCID
+    url: https://orcid.org/0000-0002-6096-5141
+  - label: Bluesky
+    url: https://bsky.app/profile/acollins16c.bsky.social
+  - label: Gardner-Webb University
+    url: https://gardner-webb.edu/people/austin-collins/
+  - label: Eberhard Karls Universität Tübingen
+    url: https://uni-tuebingen.de/en/262044
+  - label: Religion and Urbanity research group, Universität Erfurt
+    url: https://www.uni-erfurt.de/en/max-weber-kolleg/forschung/forschungsgruppen-und-stellen/research-groups/humanities-centre-for-advanced-studies-kolleg-forschungsgruppe-kfg-religion-and-urbanity-reciprocal-formations-for-2779/members
+footerQuote:
+  text: C’est par la fraternité qu’on sauve la liberté.
+  translation: It is through fraternity that liberty is saved.
+  author: Victor Hugo
+  lang: fr
+credit:
+  text: Site by Luca Picci
+  url: https://lpicci96.github.io/LucaPicci/

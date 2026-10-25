@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  positions: CollectionEntry<'profile'>['data']['currentPositions'];
+}
+
+const { positions } = Astro.props;
+---
+
+<ul class="plain-entries">
+  {positions.map((position) => (
+    <li>
+      <span class="entry-title">
+        {position.url ? (
+          <a href={position.url}>{position.institution}</a>
+        ) : (
+          position.institution
+        )}
+      </span>
+      <span class="entry-meta">{position.title}</span>
+    </li>
+  ))}
+</ul>

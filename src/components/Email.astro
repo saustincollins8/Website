@@ -1,0 +1,14 @@
+---
+interface Props {
+  address: string;
+}
+
+const { address } = Astro.props;
+
+// Encode every character as an HTML entity: browsers decode it, simple address scrapers don't.
+const encode = (text: string) =>
+  [...text].map((char) => `&#${char.codePointAt(0)};`).join('');
+const link = `<a href="${encode(`mailto:${address}`)}">${encode(address)}</a>`;
+---
+
+<Fragment set:html={link} />

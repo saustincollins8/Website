@@ -1,0 +1,44 @@
+---
+import { getCollection, render } from 'astro:content';
+import CurrentPositions from '../components/CurrentPositions.astro';
+import PublicationItem from '../components/PublicationItem.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPage, getProfile } from '../lib/content';
+import { byDateDesc } from '../lib/format';
+import { withBase } from '../lib/site';
+
+const profile = (await getProfile()).data;
+const home = await getPage('home');
+const { Content } = await render(home);
+
+const featured = (
+  await getCollection('publications', ({ data }) => data.featured)
+).sort(byDateDesc);
+---
+
+<BaseLayout>
+  <section class="deck">
+    <Content />
+  </section>
+
+  {profile.currentPositions.length > 0 && (
+    <section>
+      <h2>Current positions</h2>
+      <CurrentPositions positions={profile.currentPositions} />
+    </section>
+  )}
+
+  {featured.length > 0 && (
+    <section>
+      <h2>Selected publications</h2>
+      <ul class="entry-list">
+        {featured.map((pub) => (
+          <PublicationItem pub={pub.data} />
+        ))}
+      </ul>
+      <p class="more-link">
+        <a href={withBase('publications/')}>All publications</a>
+      </p>
+    </section>
+  )}
+</BaseLayout>

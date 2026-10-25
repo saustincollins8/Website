@@ -1,0 +1,6 @@
+dist
+node_modules
+.astro
+package-lock.json
+# Content is edited through Pages CMS; leave its formatting alone.
+src/content

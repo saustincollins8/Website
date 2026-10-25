@@ -1,0 +1,134 @@
+---
+import { getCollection } from 'astro:content';
+import PublicationList from '../components/PublicationList.astro';
+import TalkItem from '../components/TalkItem.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCv, getProfile } from '../lib/content';
+import { byDateDesc, byStartDesc } from '../lib/format';
+import { withBase } from '../lib/site';
+import { ACADEMIC_TALKS } from '../lib/talks';
+
+const profile = (await getProfile()).data;
+const cv = (await getCv()).data;
+const publications = await getCollection('publications');
+const talks = (
+  await getCollection('talks', ({ data }) => ACADEMIC_TALKS.includes(data.kind))
+).sort(byDateDesc);
+const courses = (await getCollection('courses')).sort(byStartDesc);
+---
+
+<BaseLayout title="CV" description={`Curriculum vitae of ${profile.name}.`}>
+  <h1>Curriculum Vitae</h1>
+  {cv.pdf && (
+    <p class="more-link">
+      <a href={withBase(cv.pdf)}>Download the full CV (PDF)</a>
+    </p>
+  )}
+
+  <h2>Positions</h2>
+  <ul class="entry-list">
+    {cv.positions.map((item) => (
+      <li>
+        <span class="entry-label">{item.dates}</span>
+        <div class="entry-body">
+          <p class="entry-title">{item.role}</p>
+          <p class="entry-meta">{item.institution}</p>
+          {item.note && <p class="entry-note">{item.note}</p>}
+        </div>
+      </li>
+    ))}
+  </ul>
+
+  <h2>Education</h2>
+  <ul class="entry-list">
+    {cv.education.map((item) => (
+      <li>
+        <span class="entry-label">{item.dates}</span>
+        <div class="entry-body">
+          <p class="entry-title">{item.degree}</p>
+          <p class="entry-meta">{item.institution}</p>
+          {item.note && <p class="entry-note">{item.note}</p>}
+        </div>
+      </li>
+    ))}
+  </ul>
+
+  <h2>Publications</h2>
+  <PublicationList publications={publications} headingLevel={3} />
+
+  <h2>Conference papers and invited talks</h2>
+  <ul class="entry-list">
+    {talks.map((talk) => (
+      <li>
+        <span class="entry-label">{talk.data.date.getUTCFullYear()}</span>
+        <div class="entry-body">
+          <TalkItem talk={talk.data} showYear={false} />
+        </div>
+      </li>
+    ))}
+  </ul>
+
+  <h2>Funding and research grants</h2>
+  <ul class="entry-list">
+    {cv.grants.map((item) => (
+      <li>
+        <span class="entry-label">{item.dates}</span>
+        <div class="entry-body">
+          <p class="entry-title">{item.title}</p>
+          {item.funder && <p class="entry-meta">{item.funder}</p>}
+          {item.note && <p class="entry-note">{item.note}</p>}
+        </div>
+      </li>
+    ))}
+  </ul>
+
+  <h2>Teaching</h2>
+  <ul class="entry-list">
+    {courses.map((course) => (
+      <li>
+        <span class="entry-label">{course.data.start.getUTCFullYear()}</span>
+        <div class="entry-body">
+          <p class="entry-title">{course.data.title}</p>
+          <p class="entry-meta">
+            {[course.data.institution, course.data.when]
+              .filter(Boolean)
+              .join(' · ')}
+          </p>
+        </div>
+      </li>
+    ))}
+  </ul>
+
+  {cv.honours.length > 0 && (
+    <>
+      <h2>Honours and awards</h2>
+      <ul class="plain-list">
+        {cv.honours.map((honour) => (
+          <li>{honour}</li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  {cv.memberships.length > 0 && (
+    <>
+      <h2>Professional memberships</h2>
+      <ul class="plain-list">
+        {cv.memberships.map((membership) => (
+          <li>{membership}</li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  {cv.languages.length > 0 && (
+    <>
+      <h2>Languages</h2>
+      <ul class="plain-list">
+        {cv.languages.map((language) => (
+          <li>{language}</li>
+        ))}
+      </ul>
+    </>
+  )}
+</BaseLayout>

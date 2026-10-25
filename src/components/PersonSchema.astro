@@ -1,0 +1,38 @@
+---
+// schema.org structured data that helps search engines tell this Austin Collins
+// apart from others with the same name.
+import type { CollectionEntry } from 'astro:content';
+import { withBase } from '../lib/site';
+
+interface Props {
+  profile: CollectionEntry<'profile'>['data'];
+  image?: URL;
+}
+
+const { profile, image } = Astro.props;
+const affiliations = [
+  ...new Set(profile.currentPositions.map((p) => p.institution)),
+];
+
+const data = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  alternateName: profile.fullName,
+  jobTitle: profile.tagline,
+  description: profile.shortBio,
+  url: Astro.site && new URL(withBase('/'), Astro.site).href,
+  image: image?.href,
+  sameAs: profile.links.map((link) => link.url),
+  knowsAbout: profile.researchInterests,
+  affiliation: affiliations.map((name) => ({
+    '@type': 'CollegeOrUniversity',
+    name,
+  })),
+};
+
+// Escape "<" so content can never close the script tag early.
+const json = JSON.stringify(data).replace(/</g, '\\u003c');
+---
+
+<script type="application/ld+json" set:html={json} />

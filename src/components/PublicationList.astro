@@ -1,0 +1,42 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { byDateDesc } from '../lib/format';
+import PublicationItem from './PublicationItem.astro';
+
+type Publication = CollectionEntry<'publications'>;
+
+interface Props {
+  publications: Publication[];
+  headingLevel?: 2 | 3;
+}
+
+const { publications, headingLevel = 2 } = Astro.props;
+const Heading = headingLevel === 3 ? 'h3' : 'h2';
+
+const groups: { label: string; types: Publication['data']['type'][] }[] = [
+  { label: 'Book project', types: ['book'] },
+  { label: 'Articles and chapters', types: ['article', 'chapter'] },
+  { label: 'Book reviews', types: ['review'] },
+  { label: 'Workshop reports', types: ['report'] },
+];
+
+const sections = groups
+  .map((group) => ({
+    ...group,
+    items: publications
+      .filter((pub) => group.types.includes(pub.data.type))
+      .sort(byDateDesc),
+  }))
+  .filter((group) => group.items.length > 0);
+---
+
+{sections.map((section) => (
+  <section>
+    <Heading>{section.label}</Heading>
+    <ul class="entry-list">
+      {section.items.map((pub) => (
+        <PublicationItem pub={pub.data} />
+      ))}
+    </ul>
+  </section>
+))}

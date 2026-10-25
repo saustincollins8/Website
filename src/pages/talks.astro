@@ -1,0 +1,61 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import TalkItem from '../components/TalkItem.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getProfile } from '../lib/content';
+import { byDateDesc } from '../lib/format';
+import { ACADEMIC_TALKS, MEDIA } from '../lib/talks';
+
+type Talk = CollectionEntry<'talks'>;
+
+const profile = (await getProfile()).data;
+
+// Group entries under year headings, newest year first.
+const byYear = (items: Talk[]) => {
+  const years = new Map<number, Talk[]>();
+  for (const item of items) {
+    const year = item.data.date.getUTCFullYear();
+    years.set(year, [...(years.get(year) ?? []), item]);
+  }
+  return [...years.entries()].map(([year, entries]) => ({ year, entries }));
+};
+
+const all = (await getCollection('talks')).sort(byDateDesc);
+const sections = [
+  {
+    heading: 'Conference papers and invited talks',
+    groups: byYear(
+      all.filter(({ data }) => ACADEMIC_TALKS.includes(data.kind)),
+    ),
+  },
+  {
+    heading: 'Podcasts and public writing',
+    groups: byYear(all.filter(({ data }) => MEDIA.includes(data.kind))),
+  },
+].filter((section) => section.groups.length > 0);
+---
+
+<BaseLayout
+  title="Talks & Media"
+  description={`Conference papers, invited talks, podcasts and public writing by ${profile.name}.`}
+>
+  <h1>Talks &amp; Media</h1>
+
+  {sections.map((section) => (
+    <section>
+      <h2>{section.heading}</h2>
+      {section.groups.map((group) => (
+        <div class="year-group">
+          <h3 class="year">{group.year}</h3>
+          <ul class="year-entries">
+            {group.entries.map((talk) => (
+              <li>
+                <TalkItem talk={talk.data} showYear={false} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </section>
+  ))}
+</BaseLayout>

@@ -1,0 +1,71 @@
+---
+// The site's sidebar on wide screens and its top header on phones: portrait,
+// name, tagline, navigation and the two most useful contact links.
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { NAV, isCurrentPath, withBase } from '../lib/site';
+import Email from './Email.astro';
+
+interface Props {
+  profile: CollectionEntry<'profile'>['data'];
+}
+
+const { profile } = Astro.props;
+const home = withBase('/');
+const isCurrent = (href: string) => isCurrentPath(Astro.url.pathname, href);
+// The site name is the page's main heading on the home page only.
+const SiteName = isCurrent('/') ? 'h1' : 'p';
+const orcid = profile.links.find((link) => /orcid\.org/i.test(link.url));
+---
+
+<header class="sidebar">
+  <div class="identity">
+    {profile.headshot && (
+      <a href={home} class="identity-portrait" tabindex="-1" aria-hidden="true">
+        <Image
+          src={profile.headshot}
+          alt=""
+          width={214}
+          densities={[1, 1.5]}
+          loading="eager"
+        />
+      </a>
+    )}
+    <div>
+      <SiteName class="site-name">
+        <a href={home}>{profile.name}</a>
+      </SiteName>
+      <p class="site-tagline">{profile.tagline}</p>
+    </div>
+  </div>
+
+  <nav class="site-nav" aria-label="Main">
+    <ul>
+      {NAV.map(({ href, label }) => (
+        <li>
+          <a
+            href={withBase(href)}
+            aria-current={isCurrent(href) ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  {(profile.email || orcid) && (
+    <ul class="sidebar-contact">
+      {profile.email && (
+        <li>
+          <Email address={profile.email} />
+        </li>
+      )}
+      {orcid && (
+        <li>
+          <a href={orcid.url}>ORCID</a>
+        </li>
+      )}
+    </ul>
+  )}
+</header>

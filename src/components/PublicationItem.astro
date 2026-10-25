@@ -1,0 +1,26 @@
+---
+// One publication: its year (or status) in the label column, the citation beside it.
+import type { CollectionEntry } from 'astro:content';
+import Citation from './Citation.astro';
+
+interface Props {
+  pub: CollectionEntry<'publications'>['data'];
+}
+
+const { pub } = Astro.props;
+const statusLabels = {
+  forthcoming: 'Forthcoming',
+  'in-progress': 'In progress',
+};
+const label =
+  pub.status === 'published'
+    ? String(pub.date.getUTCFullYear())
+    : statusLabels[pub.status];
+---
+
+<li>
+  <span class="entry-label">{label}</span>
+  <div class="entry-body">
+    <Citation pub={pub} />
+  </div>
+</li>

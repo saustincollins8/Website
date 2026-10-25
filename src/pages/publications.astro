@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import PublicationList from '../components/PublicationList.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getProfile } from '../lib/content';
+
+const profile = (await getProfile()).data;
+const publications = await getCollection('publications');
+---
+
+<BaseLayout
+  title="Publications"
+  description={`Articles, book reviews and workshop reports by ${profile.name}.`}
+>
+  <h1>Publications</h1>
+  <PublicationList publications={publications} />
+</BaseLayout>
