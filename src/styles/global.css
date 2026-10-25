@@ -228,11 +228,7 @@ cite {
   }
 
   .sidebar {
-    position: sticky;
-    top: 0;
     align-self: start;
-    max-height: 100vh;
-    overflow-y: auto;
     margin: 0;
     padding: 3.5rem 0 2.5rem;
     border: 0;
@@ -287,6 +283,16 @@ cite {
 
   .page-main {
     padding-top: 3.25rem;
+  }
+}
+
+/* The sidebar stays in view while reading only when the window is tall enough
+   to show all of it; on shorter screens it scrolls away with the page rather
+   than getting a scroll bar of its own. */
+@media (min-width: 60rem) and (min-height: 54rem) {
+  .sidebar {
+    position: sticky;
+    top: 0;
   }
 }
 
