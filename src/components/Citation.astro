@@ -85,5 +85,9 @@ const linkText = pub.doi ? link : 'Read online';
 <span class="citation">
   {segments.map(({ text, italic }) => (italic ? <cite>{text}</cite> : text))}
   {link && ' '}
-  {link && <a href={link}>{linkText}</a>}
+  {link && (
+    <a href={link} class={pub.doi ? undefined : 'nowrap'}>
+      {linkText}
+    </a>
+  )}
 </span>

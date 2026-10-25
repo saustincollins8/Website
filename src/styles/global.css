@@ -15,9 +15,9 @@
     serif;
   --sans:
     'Public Sans Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --sidebar: 17rem;
+  --sidebar: 18rem;
   --measure: 41rem;
-  --label: 7.5rem;
+  --label: 8.75rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -171,6 +171,7 @@ cite {
   font-weight: 500;
   line-height: 1.05;
   letter-spacing: -0.015em;
+  text-wrap: balance;
 }
 
 .site-name a {
@@ -289,7 +290,7 @@ cite {
 /* The sidebar stays in view while reading only when the window is tall enough
    to show all of it; on shorter screens it scrolls away with the page rather
    than getting a scroll bar of its own. */
-@media (min-width: 60rem) and (min-height: 54rem) {
+@media (min-width: 60rem) and (min-height: 52rem) {
   .sidebar {
     position: sticky;
     top: 0;
@@ -384,6 +385,11 @@ cite {
   font-family: var(--sans);
   font-size: 0.875rem;
   overflow-wrap: anywhere;
+}
+
+/* Short link text such as 'Read online' stays on one line */
+.citation .nowrap {
+  white-space: nowrap;
 }
 
 /* Entries without a label column */
