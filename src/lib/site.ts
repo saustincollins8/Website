@@ -1,3 +1,5 @@
+export { NEW_TAB_NOTE, newTab } from './new-tab.mjs';
+
 // Paths are relative to the site root; pass them through `withBase` before linking.
 export const NAV = [
   { href: 'research/', label: 'Research' },

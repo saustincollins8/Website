@@ -3,7 +3,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPage } from '../lib/content';
 import { byStartDesc } from '../lib/format';
-import { withBase } from '../lib/site';
+import { newTab, withBase } from '../lib/site';
 
 const page = await getPage('teaching');
 const { Content } = await render(page);
@@ -61,7 +61,12 @@ const groups = await Promise.all(
             )}
             {course.data.syllabus && (
               <p class="entry-links">
-                <a href={withBase(course.data.syllabus)}>Syllabus (PDF)</a>
+                <a
+                  href={withBase(course.data.syllabus)}
+                  {...newTab(course.data.syllabus)}
+                >
+                  Syllabus (PDF)
+                </a>
               </p>
             )}
             {course.hasDescription && (

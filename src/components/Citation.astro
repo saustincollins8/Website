@@ -2,6 +2,7 @@
 // Formats a publication in Chicago bibliography style, without the author's name.
 import type { CollectionEntry } from 'astro:content';
 import { withPeriod } from '../lib/format';
+import { newTab } from '../lib/site';
 
 interface Props {
   pub: CollectionEntry<'publications'>['data'];
@@ -86,7 +87,7 @@ const linkText = pub.doi ? link : 'Read online';
   {segments.map(({ text, italic }) => (italic ? <cite>{text}</cite> : text))}
   {link && ' '}
   {link && (
-    <a href={link} class={pub.doi ? undefined : 'nowrap'}>
+    <a href={link} class={pub.doi ? undefined : 'nowrap'} {...newTab(link)}>
       {linkText}
     </a>
   )}

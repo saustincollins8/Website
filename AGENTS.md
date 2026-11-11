@@ -16,6 +16,7 @@ Personal academic website for Austin Collins: a static Astro 7 site, edited by A
 - In code, wrap every internal path in `withBase()` from `src/lib/site.ts`, and use `isCurrentPath()` for active-link checks.
 - The address and base path come from `SITE_URL` and `BASE_PATH` (see `astro.config.mjs`). The deploy workflow sets them from the repository's Pages settings.
 - Markdown bodies are covered by `src/lib/base-links-plugin.mjs`, which prefixes root-relative `href`/`src`.
+- Links to other sites and to PDFs open in a new tab. In code, spread `newTab(url)` from `src/lib/site.ts` onto them (`<a href={url} {...newTab(url)}>`). Markdown bodies are covered by the plugin in `src/lib/new-tab.mjs`.
 
 ## Content and the CMS
 
@@ -31,7 +32,7 @@ Personal academic website for Austin Collins: a static Astro 7 site, edited by A
 
 ## Style
 
-- All styling is in `src/styles/global.css`. Colours are CSS custom properties on `:root`, redefined in a `prefers-color-scheme: dark` block, so add new colours to both.
+- All styling is in `src/styles/global.css`. Colours are CSS custom properties on `:root`. The site is always dark, whatever the visitor's system setting, so there is a single palette. The `theme-color` meta tag in `BaseLayout.astro` must match `--bg`.
 - Match the existing code: short components, a brief comment where the reason isn't obvious, no new dependencies without a reason.
 
 ## Deploying

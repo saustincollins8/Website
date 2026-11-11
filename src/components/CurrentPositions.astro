@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { newTab } from '../lib/site';
 
 interface Props {
   positions: CollectionEntry<'profile'>['data']['currentPositions'];
@@ -13,7 +14,9 @@ const { positions } = Astro.props;
     <li>
       <span class="entry-title">
         {position.url ? (
-          <a href={position.url}>{position.institution}</a>
+          <a href={position.url} {...newTab(position.url)}>
+            {position.institution}
+          </a>
         ) : (
           position.institution
         )}

@@ -5,7 +5,7 @@ import TalkItem from '../components/TalkItem.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCv, getProfile } from '../lib/content';
 import { byDateDesc, byStartDesc } from '../lib/format';
-import { withBase } from '../lib/site';
+import { newTab, withBase } from '../lib/site';
 import { ACADEMIC_TALKS } from '../lib/talks';
 
 const profile = (await getProfile()).data;
@@ -21,7 +21,9 @@ const courses = (await getCollection('courses')).sort(byStartDesc);
   <h1>Curriculum Vitae</h1>
   {cv.pdf && (
     <p class="more-link">
-      <a href={withBase(cv.pdf)}>Download the full CV (PDF)</a>
+      <a href={withBase(cv.pdf)} {...newTab(cv.pdf)}>
+        Download the full CV (PDF)
+      </a>
     </p>
   )}
 
