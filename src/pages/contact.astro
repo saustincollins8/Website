@@ -3,6 +3,7 @@ import CurrentPositions from '../components/CurrentPositions.astro';
 import Email from '../components/Email.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getProfile } from '../lib/content';
+import { newTab } from '../lib/site';
 
 const profile = (await getProfile()).data;
 ---
@@ -35,7 +36,9 @@ const profile = (await getProfile()).data;
       <ul class="link-list">
         {profile.links.map(({ label, url }) => (
           <li>
-            <a href={url}>{label}</a>
+            <a href={url} {...newTab(url)}>
+              {label}
+            </a>
           </li>
         ))}
       </ul>

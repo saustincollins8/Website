@@ -8,7 +8,7 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import PersonSchema from '../components/PersonSchema.astro';
 import { getProfile } from '../lib/content';
-import { withBase } from '../lib/site';
+import { NEW_TAB_NOTE, withBase } from '../lib/site';
 
 interface Props {
   /** Page title; omit on the home page. */
@@ -40,6 +40,8 @@ const shareImage = profile.headshot
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Tints the browser's toolbar on phones; keep in step with --bg in global.css */}
+    <meta name="theme-color" content="#192020" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     {noindex ? (
@@ -70,5 +72,9 @@ const shareImage = profile.headshot
         <Footer profile={profile} />
       </div>
     </div>
+    {/* Read out after each link that opens in a new tab (see src/lib/new-tab.mjs) */}
+    <p id={NEW_TAB_NOTE} hidden>
+      Opens in a new tab
+    </p>
   </body>
 </html>

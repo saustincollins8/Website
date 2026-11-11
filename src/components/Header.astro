@@ -1,9 +1,9 @@
 ---
 // The site's sidebar on wide screens and its top header on phones: portrait,
-// name, tagline, navigation and the two most useful contact links.
+// name, tagline, navigation and the two most useful contact links as icons.
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
-import { NAV, isCurrentPath, withBase } from '../lib/site';
+import { NAV, isCurrentPath, newTab, withBase } from '../lib/site';
 import Email from './Email.astro';
 
 interface Props {
@@ -58,12 +58,31 @@ const orcid = profile.links.find((link) => /orcid\.org/i.test(link.url));
     <ul class="sidebar-contact">
       {profile.email && (
         <li>
-          <Email address={profile.email} />
+          <Email address={profile.email}>
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+              <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z" />
+            </svg>
+          </Email>
         </li>
       )}
       {orcid && (
         <li>
-          <a href={orcid.url}>ORCID</a>
+          <a
+            href={orcid.url}
+            aria-label="ORCID"
+            title="ORCID"
+            {...newTab(orcid.url)}
+          >
+            {/* The ORCID iD mark, in one colour: the letters are cut out of the circle */}
+            <svg
+              viewBox="0 0 256 256"
+              aria-hidden="true"
+              fill="currentColor"
+              fill-rule="evenodd"
+            >
+              <path d="M256 128c0 70.7-57.3 128-128 128S0 198.7 0 128 57.3 0 128 0s128 57.3 128 128ZM86.3 186.2H70.9V79.1h15.4v107.1Zm22.6-107.1h41.6c39.6 0 57 28.3 57 53.6 0 27.5-21.5 53.6-56.8 53.6h-41.8V79.1Zm15.4 93.3h24.5c34.9 0 42.9-26.5 42.9-39.7 0-21.5-13.7-39.7-43.7-39.7h-23.7v79.4ZM88.7 56.8c0 5.5-4.5 10.1-10.1 10.1s-10.1-4.6-10.1-10.1 4.5-10.1 10.1-10.1 10.1 4.6 10.1 10.1Z" />
+            </svg>
+          </a>
         </li>
       )}
     </ul>

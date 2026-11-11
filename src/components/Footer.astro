@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { newTab } from '../lib/site';
 
 interface Props {
   profile: CollectionEntry<'profile'>['data'];
@@ -29,7 +30,15 @@ const year = new Date().getFullYear();
       &copy; {year} {profile.name}
     </p>
     {credit && (
-      <p>{credit.url ? <a href={credit.url}>{credit.text}</a> : credit.text}</p>
+      <p>
+        {credit.url ? (
+          <a href={credit.url} {...newTab(credit.url)}>
+            {credit.text}
+          </a>
+        ) : (
+          credit.text
+        )}
+      </p>
     )}
   </div>
 </footer>

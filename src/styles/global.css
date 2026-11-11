@@ -1,14 +1,15 @@
-/* Contemporary editorial: a neutral page, Newsreader for reading and display,
-   Public Sans for navigation and metadata, and one deep teal accent. */
+/* Contemporary editorial: a dark page whatever the visitor's system setting,
+   Newsreader for reading and display, Public Sans for navigation and metadata,
+   and one teal accent. */
 :root {
-  color-scheme: light dark;
+  color-scheme: dark;
 
-  --bg: #fcfcfa;
-  --ink: #161616;
-  --muted: #5c5c58;
-  --rule: #e2e2dc;
-  --accent: #00686b;
-  --accent-strong: #004a4c;
+  --bg: #192020;
+  --ink: #ebebe7;
+  --muted: #a5acad;
+  --rule: #313c3c;
+  --accent: #49aaa9;
+  --accent-strong: #7ec6c6;
 
   --serif:
     'Newsreader Variable', 'Iowan Old Style', 'Palatino Linotype', Georgia,
@@ -18,17 +19,6 @@
   --sidebar: 18rem;
   --measure: 41rem;
   --label: 8.75rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #131515;
-    --ink: #ebebe7;
-    --muted: #a6a6a0;
-    --rule: #2d3131;
-    --accent: #5ec4c0;
-    --accent-strong: #93dcd8;
-  }
 }
 
 /* Base */
@@ -111,9 +101,12 @@ cite {
   font-style: italic;
 }
 
-.lead {
-  font-size: 1.4rem;
-  line-height: 1.4;
+/* An introduction a step up from the body text: page intros, and the first
+   paragraph of the home page bio */
+.lead,
+.deck > p:first-of-type {
+  font-size: 1.3125rem;
+  line-height: 1.5;
 }
 
 .skip-link {
@@ -263,19 +256,26 @@ cite {
     margin-top: 0.35rem;
   }
 
+  /* Email and ORCID as a row of icons. The padding enlarges the click area;
+     the negative margin keeps the first icon in line with the menu. */
   .sidebar-contact {
-    display: block;
-    margin: 2.5rem 0 0;
+    display: flex;
+    gap: 0.6rem;
+    margin: 2.25rem 0 0 -0.4rem;
     padding: 0;
     list-style: none;
-    font-family: var(--sans);
-    font-size: 0.875rem;
-    line-height: 1.8;
   }
 
   .sidebar-contact a {
+    display: block;
+    padding: 0.4rem;
     color: var(--muted);
-    overflow-wrap: anywhere;
+  }
+
+  .sidebar-contact svg {
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 
   .sidebar-contact a:hover {
@@ -297,13 +297,15 @@ cite {
   }
 }
 
-/* Home page: the first paragraph is the deck, set large */
-.deck > p:first-of-type {
-  margin-bottom: 1.5rem;
-  font-size: clamp(1.55rem, 1.25rem + 1.1vw, 2rem);
-  font-weight: 380;
-  line-height: 1.28;
-  letter-spacing: -0.012em;
+/* Home page: a short accent rule divides the introduction from the rest of the
+   bio. A border rather than a background, so it survives high-contrast modes. */
+.deck > p:first-of-type::after {
+  content: '';
+  display: block;
+  width: 3rem;
+  margin-top: 1.75rem;
+  margin-bottom: 0.4rem;
+  border-top: 2px solid var(--accent);
 }
 
 .more-link {
@@ -460,9 +462,8 @@ cite {
 
 .contact-email {
   margin-bottom: 0;
-  font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.2rem);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  font-size: 1.3125rem;
+  line-height: 1.5;
 }
 
 .contact-email a {

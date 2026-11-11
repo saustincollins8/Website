@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { satteri } from '@astrojs/markdown-satteri';
 import baseLinksPlugin from './src/lib/base-links-plugin.mjs';
+import newTabLinksPlugin from './src/lib/new-tab.mjs';
 
 // The public address and the path the site is served from come from the build
 // environment, so the same code works on GitHub Pages (which serves a project
@@ -23,8 +24,11 @@ export default defineConfig({
   base,
   integrations: [sitemap()],
   markdown: {
-    // Links and images written in the editor as /files/… are rooted at the site, not the domain.
-    processor: satteri({ hastPlugins: [baseLinksPlugin(base)] }),
+    // Links and images written in the editor as /files/… are rooted at the site, not the domain,
+    // and links to other sites and to PDFs open in a new tab.
+    processor: satteri({
+      hastPlugins: [baseLinksPlugin(base), newTabLinksPlugin()],
+    }),
   },
   devToolbar: { enabled: false },
 });

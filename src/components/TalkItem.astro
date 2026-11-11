@@ -2,6 +2,7 @@
 // A talk as two lines: its title, then event, place and date in small type.
 import type { CollectionEntry } from 'astro:content';
 import { withPeriod } from '../lib/format';
+import { newTab } from '../lib/site';
 
 interface Props {
   talk: CollectionEntry<'talks'>['data'];
@@ -41,7 +42,15 @@ const meta = [talk.title ? talk.event : undefined, talk.location, when]
 {talk.note && <p class="entry-note">{withPeriod(talk.note)}</p>}
 {(talk.url || talk.video) && (
   <p class="entry-links">
-    {talk.url && <a href={talk.url}>{linkLabels[talk.kind] ?? 'Details'}</a>}
-    {talk.video && <a href={talk.video}>Video</a>}
+    {talk.url && (
+      <a href={talk.url} {...newTab(talk.url)}>
+        {linkLabels[talk.kind] ?? 'Details'}
+      </a>
+    )}
+    {talk.video && (
+      <a href={talk.video} {...newTab(talk.video)}>
+        Video
+      </a>
+    )}
   </p>
 )}
